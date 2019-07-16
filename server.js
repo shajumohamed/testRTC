@@ -10,6 +10,9 @@ var wss = null, sslSrv = null;
   sslSrv = http.createServer(app).listen(process.env.PORT||443);
   console.log("The HTTPS server is up and running");
 
+// create the WebSocket server
+wss = new WebSocketServer({server: sslSrv});
+console.log("WebSocket Secure server is up and running.");
 
   /** successful connection */
 wss.on('connection', function (client) {
