@@ -7,6 +7,13 @@ const WebSocketServer = require('ws').Server,
 var wss = null, sslSrv = null;
 
   app.use(express.static('public'));
+
+  app.use(function(req, res, next) {
+  if(req.headers['x-forwarded-proto']==='http') {
+    return res.redirect(['https://', req.get('Host'), req.url].join(''));
+  }
+  next();
+});
   sslSrv = http.createServer(app).listen(process.env.PORT||443);
   console.log("The HTTPS server is up and running");
 
