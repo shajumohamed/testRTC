@@ -7,8 +7,8 @@ window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecogn
   || window.msSpeechRecognition || window.oSpeechRecognition;
 
 var config = {
-  wssHost: 'ws://localhost:8080/'
-  // wssHost: 'wss://example.com/myWebSocket'
+  //wssHost: 'ws://localhost:8080/'
+  wssHost: 'wss://nodeappshaju1.azurewebsites.net/'
 };
 var localVideoElem = null,
   remoteVideoElem = null,
