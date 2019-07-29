@@ -9,7 +9,7 @@ window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecogn
 var cadidateCount=1;
 var config = {
   //wssHost: 'ws://localhost:8080/'
-   wssHost: 'wss://testappshaju.herokuapp.com/'
+   wssHost: 'wss://'+window.location.host+'/'
 };
 var localVideoElem = null, 
   remoteVideoElem = null, 
