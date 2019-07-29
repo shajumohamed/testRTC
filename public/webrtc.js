@@ -3,27 +3,28 @@ navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || 
 window.RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
 window.RTCIceCandidate = window.RTCIceCandidate || window.mozRTCIceCandidate || window.webkitRTCIceCandidate;
 window.RTCSessionDescription = window.RTCSessionDescription || window.mozRTCSessionDescription || window.webkitRTCSessionDescription;
-window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition || window.mozSpeechRecognition
+window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition || window.mozSpeechRecognition 
   || window.msSpeechRecognition || window.oSpeechRecognition;
 
+var cadidateCount=1;
 var config = {
   //wssHost: 'ws://localhost:8080/'
-  wssHost: 'wss://testappshaju.herokuapp.com/'
+   wssHost: 'wss://testappshaju.herokuapp.com/'
 };
-var localVideoElem = null,
-  remoteVideoElem = null,
+var localVideoElem = null, 
+  remoteVideoElem = null, 
   localVideoStream = null,
-  videoCallButton = null,
+  videoCallButton = null, 
   endCallButton = null;
 var peerConn = null,
-  wsc = new WebSocket(config.wssHost),
-  peerConnCfg = {'iceServers':
-    [{'url': 'stun:stun.services.mozilla.com'},
+ wsc = new WebSocket(config.wssHost),
+  peerConnCfg = {'iceServers': 
+    [{'url': 'stun:stun.services.mozilla.com'}, 
      {'url': 'stun:stun.l.google.com:19302'}]
   };
-
+    
 function pageReady() {
-  // check browser WebRTC availability
+  // check browser WebRTC availability 
   if(navigator.getUserMedia) {
     videoCallButton = document.getElementById("videoCallButton");
     endCallButton = document.getElementById("endCallButton");
@@ -31,8 +32,10 @@ function pageReady() {
     remoteVideo = document.getElementById('remoteVideo');
     videoCallButton.removeAttribute("disabled");
     videoCallButton.addEventListener("click", initiateCall);
+	addMessageButton.addEventListener("click", addMessage);
     endCallButton.addEventListener("click", function (evt) {
-      wsc.send(JSON.stringify({"closeConnection": true }));
+		areaCloseConnection.value=JSON.stringify({"closeConnection": true });
+    wsc.send(JSON.stringify({"closeConnection": true }));
     });
   } else {
     alert("Sorry, your browser does not support WebRTC!")
@@ -60,6 +63,15 @@ function initiateCall() {
   }, function(error) { console.log(error);});
 };
 
+function addMessage()
+{
+	var stringInput=areaInput.value;
+	areaInput.value="";
+	//var JsonInput=JSON.parse(stringinput);
+	processMessage(stringInput);
+	
+}
+
 function answerCall() {
   prepareCall();
   // get the local stream, show it in the local video element and send it
@@ -71,7 +83,34 @@ function answerCall() {
   }, function(error) { console.log(error);});
 };
 
-wsc.onmessage = function (evt) {
+
+function OnMessageReceived(evt){
+	
+  
+  processMessage(evt.data);
+  
+}
+function processMessage(stringData)
+{
+	if (!peerConn) answerCall();
+	var signal = null;
+	signal = JSON.parse(stringData);
+	if (signal.sdp) {
+    console.log("Received SDP from remote peer.");
+    peerConn.setRemoteDescription(new RTCSessionDescription(signal.sdp));
+  }
+  else if (signal.candidate) {
+    console.log("Received ICECandidate from remote peer.");
+    peerConn.addIceCandidate(new RTCIceCandidate(signal.candidate));
+  } else if ( signal.closeConnection){
+    console.log("Received 'close call' signal from remote peer.");
+    endCall();
+  }
+}
+
+wsc.onmessage = OnMessageReceived;
+/*
+function (evt) {
   var signal = null;
   if (!peerConn) answerCall();
   signal = JSON.parse(evt.data);
@@ -86,19 +125,20 @@ wsc.onmessage = function (evt) {
     console.log("Received 'close call' signal from remote peer.");
     endCall();
   }
-};
+};*/
 
 function createAndSendOffer() {
   peerConn.createOffer(
     function (offer) {
       var off = new RTCSessionDescription(offer);
-      peerConn.setLocalDescription(new RTCSessionDescription(off),
+      peerConn.setLocalDescription(new RTCSessionDescription(off), 
         function() {
-          wsc.send(JSON.stringify({"sdp": off }));
-        },
+			areaOffer.value=JSON.stringify({"sdp": off });
+         wsc.send(JSON.stringify({"sdp": off }));
+        }, 
         function(error) { console.log(error);}
       );
-    },
+    }, 
     function (error) { console.log(error);}
   );
 };
@@ -108,8 +148,9 @@ function createAndSendAnswer() {
     function (answer) {
       var ans = new RTCSessionDescription(answer);
       peerConn.setLocalDescription(ans, function() {
-          wsc.send(JSON.stringify({"sdp": ans }));
-        },
+		  areaAnswer.value=JSON.stringify({"sdp": ans });
+         wsc.send(JSON.stringify({"sdp": ans }));
+        }, 
         function (error) { console.log(error);}
       );
     },
@@ -119,12 +160,30 @@ function createAndSendAnswer() {
 
 function onIceCandidateHandler(evt) {
   if (!evt || !evt.candidate) return;
+  switch(cadidateCount)
+  {
+	  case 1:cadidateCount++;
+			areaCandidate1.value=JSON.stringify({"candidate": evt.candidate });	
+				break;
+	  
+	  case 2:cadidateCount++;
+			areaCandidate2.value=JSON.stringify({"candidate": evt.candidate });	
+				break;
+	  
+	  case 3:cadidateCount++;
+			areaCandidate3.value=JSON.stringify({"candidate": evt.candidate });	
+				break;
+	  
+	  case 4:cadidateCount++;
+			areaCandidate4.value=JSON.stringify({"candidate": evt.candidate });	
+			break;
+  }
   wsc.send(JSON.stringify({"candidate": evt.candidate }));
 };
 
 function onAddStreamHandler(evt) {
   videoCallButton.setAttribute("disabled", true);
-  endCallButton.removeAttribute("disabled");
+  endCallButton.removeAttribute("disabled"); 
   // set remote video stream as source for remote video HTML5 element
   //remoteVideo.src = URL.createObjectURL(evt.stream);
   remoteVideo.srcObject=evt.stream;

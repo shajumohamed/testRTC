@@ -4,12 +4,31 @@
     <script src="webrtc.js"></script>
     <title>WebRTC Simple Video-Chat</title>
   </head>
-
+  
   <body>
     <video id="remoteVideo" autoplay></video>
     <video id="localVideo" autoplay muted></video>
     <input id="videoCallButton" type="button" disabled value="Video Call"/>
     <input id="endCallButton" type="button" disabled value="End Call"/>
     <script>window.addEventListener("load", pageReady);</script>
+	Offer:<textarea id=areaOffer></textarea>
+	Answer:<textarea id=areaAnswer></textarea>
+	Candidate1:<textarea id=areaCandidate1></textarea>
+	Candidate2:<textarea id=areaCandidate2></textarea>
+	Candidate3:<textarea id=areaCandidate3></textarea>
+	Candidate4:<textarea id=areaCandidate4></textarea>
+	close connection:<textarea id=areaCloseConnection></textarea>
+	<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<textarea id="areaInput"></textarea>
+<input id="addMessageButton" type="button"  value="Add Message"/> 
+	
+
+	
+	
   </body>
 </html>
