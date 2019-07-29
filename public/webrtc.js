@@ -18,10 +18,21 @@ var localVideoElem = null,
   endCallButton = null;
 var peerConn = null,
  wsc = new WebSocket(config.wssHost),
-  peerConnCfg = {'iceServers': 
-    [{'url': 'stun:stun.services.mozilla.com'}, 
-     {'url': 'stun:stun.l.google.com:19302'}]
-  };
+//   peerConnCfg = {'iceServers': 
+//     [{'url': 'stun:stun.services.mozilla.com'}, 
+//      {'url': 'stun:stun.l.google.com:19302'}]
+//   };
+
+peerConnCfg={
+    iceServers:{"urls": 
+    [
+    "turn:13.250.13.83:3478?transport=udp"
+    ],
+    "username": "YzYNCouZM1mhqhmseWk6",
+    "credential": "YzYNCouZM1mhqhmseWk6"
+    }
+}
+
     
 function pageReady() {
   // check browser WebRTC availability 
