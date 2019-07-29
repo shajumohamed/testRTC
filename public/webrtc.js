@@ -8,7 +8,7 @@ window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecogn
 
 var config = {
   //wssHost: 'ws://localhost:8080/'
-  wssHost: 'wss://nodeappshaju1.azurewebsites.net/'
+  wssHost: 'wss://testappshaju.herokuapp.com/'
 };
 var localVideoElem = null,
   remoteVideoElem = null,
