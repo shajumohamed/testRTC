@@ -3,7 +3,7 @@ navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || 
 window.RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
 window.RTCIceCandidate = window.RTCIceCandidate || window.mozRTCIceCandidate || window.webkitRTCIceCandidate;
 window.RTCSessionDescription = window.RTCSessionDescription || window.mozRTCSessionDescription || window.webkitRTCSessionDescription;
-window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition || window.mozSpeechRecognition 
+window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition || window.mozSpeechRecognition
   || window.msSpeechRecognition || window.oSpeechRecognition;
 
 var cadidateCount=1;
@@ -11,28 +11,28 @@ var config = {
   //wssHost: 'ws://localhost:8080/'
    wssHost: 'wss://'+window.location.host+'/'
 };
-var localVideoElem = null, 
-  remoteVideoElem = null, 
+var localVideoElem = null,
+  remoteVideoElem = null,
   localVideoStream = null,
-  videoCallButton = null, 
+  videoCallButton = null,
   endCallButton = null;
 var peerConn = null,
  wsc = new WebSocket(config.wssHost),
-//   peerConnCfg = {'iceServers': 
-//     [{'url': 'stun:stun.services.mozilla.com'}, 
-//      {'url': 'stun:stun.l.google.com:19302'}]
-//   };
+  peerConnCfg = {'iceServers':
+    [{'url': 'stun:stun.services.mozilla.com'},
+     {'url': 'stun:stun.l.google.com:19302'}]
+  };
 
-peerConnCfg={
-    iceServers:[{"url": "turn:13.250.13.83:3478?transport=udp",
-    "username": "YzYNCouZM1mhqhmseWk6",
-    "credential": "YzYNCouZM1mhqhmseWk6"
-    }]
-}
+// peerConnCfg={
+//     iceServers:[{"url": "turn:13.250.13.83:3478?transport=udp",
+//     "username": "YzYNCouZM1mhqhmseWk6",
+//     "credential": "YzYNCouZM1mhqhmseWk6"
+//     }]
+// }
 
-    
+
 function pageReady() {
-  // check browser WebRTC availability 
+  // check browser WebRTC availability
   if(navigator.getUserMedia) {
     videoCallButton = document.getElementById("videoCallButton");
     endCallButton = document.getElementById("endCallButton");
@@ -77,7 +77,7 @@ function addMessage()
 	areaInput.value="";
 	//var JsonInput=JSON.parse(stringinput);
 	processMessage(stringInput);
-	
+
 }
 
 function answerCall() {
@@ -93,10 +93,10 @@ function answerCall() {
 
 
 function OnMessageReceived(evt){
-	
-  
+
+
   processMessage(evt.data);
-  
+
 }
 function processMessage(stringData)
 {
@@ -139,14 +139,14 @@ function createAndSendOffer() {
   peerConn.createOffer(
     function (offer) {
       var off = new RTCSessionDescription(offer);
-      peerConn.setLocalDescription(new RTCSessionDescription(off), 
+      peerConn.setLocalDescription(new RTCSessionDescription(off),
         function() {
 			areaOffer.value=JSON.stringify({"sdp": off });
          wsc.send(JSON.stringify({"sdp": off }));
-        }, 
+        },
         function(error) { console.log(error);}
       );
-    }, 
+    },
     function (error) { console.log(error);}
   );
 };
@@ -158,7 +158,7 @@ function createAndSendAnswer() {
       peerConn.setLocalDescription(ans, function() {
 		  areaAnswer.value=JSON.stringify({"sdp": ans });
          wsc.send(JSON.stringify({"sdp": ans }));
-        }, 
+        },
         function (error) { console.log(error);}
       );
     },
@@ -171,19 +171,19 @@ function onIceCandidateHandler(evt) {
   switch(cadidateCount)
   {
 	  case 1:cadidateCount++;
-			areaCandidate1.value=JSON.stringify({"candidate": evt.candidate });	
+			areaCandidate1.value=JSON.stringify({"candidate": evt.candidate });
 				break;
-	  
+
 	  case 2:cadidateCount++;
-			areaCandidate2.value=JSON.stringify({"candidate": evt.candidate });	
+			areaCandidate2.value=JSON.stringify({"candidate": evt.candidate });
 				break;
-	  
+
 	  case 3:cadidateCount++;
-			areaCandidate3.value=JSON.stringify({"candidate": evt.candidate });	
+			areaCandidate3.value=JSON.stringify({"candidate": evt.candidate });
 				break;
-	  
+
 	  case 4:cadidateCount++;
-			areaCandidate4.value=JSON.stringify({"candidate": evt.candidate });	
+			areaCandidate4.value=JSON.stringify({"candidate": evt.candidate });
 			break;
   }
   wsc.send(JSON.stringify({"candidate": evt.candidate }));
@@ -191,7 +191,7 @@ function onIceCandidateHandler(evt) {
 
 function onAddStreamHandler(evt) {
   videoCallButton.setAttribute("disabled", true);
-  endCallButton.removeAttribute("disabled"); 
+  endCallButton.removeAttribute("disabled");
   // set remote video stream as source for remote video HTML5 element
   //remoteVideo.src = URL.createObjectURL(evt.stream);
   remoteVideo.srcObject=evt.stream;
